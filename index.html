@@ -1,1 +1,416 @@
-<!DOCTYPE html><html><head><title>Multi Language Translator</title></head><body><h1>Multi Language Translator</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarvam AI Translator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .api-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .translator-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .text-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            flex: 1;
+            min-height: 200px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            display: block;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .language-item {
+            background: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        .toggle-btn {
+            background: #6c757d;
+            padding: 10px 20px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .translator-section {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Sarvam AI Translator</h1>
+        <p class="subtitle">Translate text across 22+ Indian languages powered by Sarvam AI</p>
+
+        <div class="api-section">
+            <div class="input-group">
+                <label for="apiKey">🔑 Enter Your Sarvam AI API Key:</label>
+                <input type="password" id="apiKey" placeholder="Enter your API key here">
+                <small style="color: #666; margin-top: 5px; display: block;">
+                    Get your API key from <a href="https://docs.sarvam.ai" target="_blank">Sarvam AI Dashboard</a>
+                </small>
+            </div>
+        </div>
+
+        <div class="translator-section">
+            <div class="text-box">
+                <label for="sourceText">Source Text:</label>
+                <textarea id="sourceText" placeholder="Enter text to translate..."></textarea>
+                <div class="input-group" style="margin-top: 10px;">
+                    <label for="sourceLang">Source Language:</label>
+                    <select id="sourceLang">
+                        <option value="en-IN">English</option>
+                        <option value="hi-IN">Hindi (हिंदी)</option>
+                        <option value="bn-IN">Bengali (বাংলা)</option>
+                        <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                        <option value="ml-IN">Malayalam (മലയാളം)</option>
+                        <option value="mr-IN">Marathi (मराठी)</option>
+                        <option value="od-IN">Odia (ଓଡ଼ିଆ)</option>
+                        <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
+                        <option value="ta-IN">Tamil (தமிழ்)</option>
+                        <option value="te-IN">Telugu (తెలుగు)</option>
+                        <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                        <option value="as-IN">Assamese (অসমীয়া)</option>
+                        <option value="brx-IN">Bodo (बड़ो)</option>
+                        <option value="doi-IN">Dogri (डोगरी)</option>
+                        <option value="gom-IN">Konkani (कोंकणी)</option>
+                        <option value="ks-IN">Kashmiri (کٲشُر)</option>
+                        <option value="mai-IN">Maithili (मैथिली)</option>
+                        <option value="mni-IN">Manipuri (মৈতৈলোন্)</option>
+                        <option value="ne-IN">Nepali (नेपाली)</option>
+                        <option value="sa-IN">Sanskrit (संस्कृतम्)</option>
+                        <option value="sat-IN">Santali (ᱥᱟᱱᱛᱟᱲᱤ)</option>
+                        <option value="sd-IN">Sindhi (سنڌي)</option>
+                        <option value="ur-IN">Urdu (اردو)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="text-box">
+                <label for="targetText">Translated Text:</label>
+                <textarea id="targetText" placeholder="Translation will appear here..." readonly></textarea>
+                <div class="input-group" style="margin-top: 10px;">
+                    <label for="targetLang">Target Language:</label>
+                    <select id="targetLang">
+                        <option value="hi-IN">Hindi (हिंदी)</option>
+                        <option value="en-IN">English</option>
+                        <option value="bn-IN">Bengali (বাংলা)</option>
+                        <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                        <option value="ml-IN">Malayalam (മലയാളം)</option>
+                        <option value="mr-IN">Marathi (मराठी)</option>
+                        <option value="od-IN">Odia (ଓଡ଼ିଆ)</option>
+                        <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
+                        <option value="ta-IN">Tamil (தமிழ்)</option>
+                        <option value="te-IN">Telugu (తెలుగు)</option>
+                        <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                        <option value="as-IN">Assamese (অসমীয়া)</option>
+                        <option value="brx-IN">Bodo (बड़ो)</option>
+                        <option value="doi-IN">Dogri (डोगरी)</option>
+                        <option value="gom-IN">Konkani (कोंकणी)</option>
+                        <option value="ks-IN">Kashmiri (کٲشُر)</option>
+                        <option value="mai-IN">Maithili (मैथिली)</option>
+                        <option value="mni-IN">Manipuri (মৈতৈলোন্)</option>
+                        <option value="ne-IN">Nepali (नेपाली)</option>
+                        <option value="sa-IN">Sanskrit (संस्कृतम्)</option>
+                        <option value="sat-IN">Santali (ᱥᱟᱱᱛᱟᱲᱤ)</option>
+                        <option value="sd-IN">Sindhi (سنڌي)</option>
+                        <option value="ur-IN">Urdu (اردو)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button id="translateBtn" onclick="translateText()">🔄 Translate</button>
+
+        <div id="status" class="status"></div>
+
+        <button class="toggle-btn" onclick="toggleLanguages()">📋 Show Supported Languages</button>
+        <div id="languageList" style="display: none;">
+            <div class="language-grid">
+                <div class="language-item">English</div>
+                <div class="language-item">Hindi</div>
+                <div class="language-item">Bengali</div>
+                <div class="language-item">Kannada</div>
+                <div class="language-item">Malayalam</div>
+                <div class="language-item">Marathi</div>
+                <div class="language-item">Odia</div>
+                <div class="language-item">Punjabi</div>
+                <div class="language-item">Tamil</div>
+                <div class="language-item">Telugu</div>
+                <div class="language-item">Gujarati</div>
+                <div class="language-item">Assamese</div>
+                <div class="language-item">Bodo</div>
+                <div class="language-item">Dogri</div>
+                <div class="language-item">Konkani</div>
+                <div class="language-item">Kashmiri</div>
+                <div class="language-item">Maithili</div>
+                <div class="language-item">Manipuri</div>
+                <div class="language-item">Nepali</div>
+                <div class="language-item">Sanskrit</div>
+                <div class="language-item">Santali</div>
+                <div class="language-item">Sindhi</div>
+                <div class="language-item">Urdu</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function toggleLanguages() {
+            const langList = document.getElementById('languageList');
+            langList.style.display = langList.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function translateText() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const sourceText = document.getElementById('sourceText').value.trim();
+            const sourceLang = document.getElementById('sourceLang').value;
+            const targetLang = document.getElementById('targetLang').value;
+            const translateBtn = document.getElementById('translateBtn');
+
+            if (!apiKey) {
+                showStatus('⚠️ Please enter your API key', 'error');
+                return;
+            }
+
+            if (!sourceText) {
+                showStatus('⚠️ Please enter text to translate', 'error');
+                return;
+            }
+
+            if (sourceLang === targetLang) {
+                showStatus('⚠️ Source and target languages must be different', 'error');
+                return;
+            }
+
+            translateBtn.disabled = true;
+            translateBtn.textContent = '⏳ Translating...';
+            showStatus('🔄 Translation in progress...', 'info');
+
+            try {
+                const response = await fetch('https://api.sarvam.ai/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'api-subscription-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        input: sourceText,
+                        source_language_code: sourceLang,
+                        target_language_code: targetLang,
+                        speaker_gender: "Male",
+                        mode: "formal",
+                        model: "mayura:v1",
+                        enable_preprocessing: false
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.translated_text) {
+                    document.getElementById('targetText').value = data.translated_text;
+                    showStatus('✅ Translation completed successfully!', 'success');
+                } else {
+                    throw new Error('No translation returned from API');
+                }
+
+            } catch (error) {
+                console.error('Translation error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+                document.getElementById('targetText').value = '';
+            } finally {
+                translateBtn.disabled = false;
+                translateBtn.textContent = '🔄 Translate';
+            }
+        }
+
+        document.getElementById('sourceText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                translateText();
+            }
+        });
+
+        document.getElementById('apiKey').addEventListener('input', function() {
+            const status = document.getElementById('status');
+            if (status.classList.contains('error') && status.textContent.includes('API key')) {
+                status.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
